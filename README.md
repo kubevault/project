@@ -6,13 +6,13 @@
 This repository contains issues for KubeVault poject.
 
 ## Installation
-To install Vault operator & CSI driver, please follow the guide [here](https://github.com/kubevault/docs/blob/master/docs/setup/README.md).
+To install Vault operator & CSI driver, please follow the guide [here](https://kubevault.com/docs/latest/setup/).
 
 ## Using KubeVault
-Want to learn how to use KubeVault? Please start [here](https://github.com/kubevault/docs/blob/master/docs/guides/README.md).
+Want to learn how to use KubeVault? Please start [here](https://kubevault.com/docs/latest/guides/).
 
 ## Contribution guidelines
-Want to help improve KubeVault? Please start [here](https://github.com/kubevault/docs/blob/master/docs/CONTRIBUTING.md).
+Want to help improve KubeVault? Please start [here](https://kubevault.com/docs/latest/setup/developer-guide/overview/).
 
 ---
 
