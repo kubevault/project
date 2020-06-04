@@ -43,7 +43,7 @@ The info from AppBinding should be used to implement `AuthInterface` interface i
 ## Step 5: Read secrets using the AppRole token
 - [ ] Response Wrap the SecretID
 
-No special support needed for this in KubeVault operator. One place this can be supported is in CSI driver. Currently CSI driver uses Kubernetes Auth method and pod's service account to read secrets from Vault and mount into the pod. If the application that is running inside the pod, instead connects to Vault directly to read secrets, we could extend the CSI driver to inject a wrapped SecretID into the pod. My question is now necessary is this?
+No special support needed for this in KubeVault operator. One place this can be supported is in CSI driver. Currently CSI driver uses Kubernetes Auth method and pod's service account to read secrets from Vault and mount into the pod. If the application that is running inside the pod, instead connects to Vault directly to read secrets, we could extend the CSI driver to inject a wrapped SecretID into the pod. My question is how necessary is this?
 
 - [ ] Limit the SecretID Usages
 
