@@ -1,14 +1,13 @@
-# AppRole Support in KubeVault
+# AppRole Support
 
-https://learn.hashicorp.com/vault/identity-access-management/approle
+Based on [AppRole Pull Authentication](https://learn.hashicorp.com/vault/identity-access-management/approle), I have summaries the various enhacements required in KubeVault.
 
-
-- [ ] Step 1: Enable AppRole auth method (Persona: admin)
+## Step 1: Enable AppRole auth method (Persona: admin)
 
 This steps should be done via spec.authMethods in [VaultServer CRD](
 https://github.com/kubevault/operator/blob/3535586316cb243c4b4648fbacf06b148da73c0c/apis/kubevault/v1alpha1/vaultserver_types.go#L89-L91)
 
-- [ ] Step 2: Create a role with policy attached (Persona: admin)
+## Step 2: Create a role with policy attached (Persona: admin)
 
  - Here the policy can be created using Vault cli or `VaultPolicy` CRD . No additional change is required.
 
@@ -16,7 +15,7 @@ https://github.com/kubevault/operator/blob/3535586316cb243c4b4648fbacf06b148da73
 
   One question is should we delete the vault AppRole when this `VaultPolicyBinding` CRD is deleted? We have not done that for `KubernetesSubjectRef` today. But we could do this. This will require adding a finalizer for `VaultPolicyBinding` to delete the Vault role before removing `VaultPolicyBinding` object.
 
-- [ ] Step 3: Get RoleID and SecretID
+## Step 3: Get RoleID and SecretID
 
 Vault docs are not clear who performs this step. My idea will be that `admin` persona issues the SecretID and shares the info with `app` persona. The key question is how do we avoid unauthorized persons from creating such secrets.
 
@@ -34,15 +33,14 @@ My general idea is that this secret should be created in the same namespace wher
 
 The benefit with this approach is that the `AppRoleSecretIDRequest` object can be created in any namespace. The secret will be created in the same namespace as `AppRoleSecretIDRequest` object. So, user can run a pod by mounting this secret and can perform additional operations inside the pod using `AppRole`s.
 
-
-- [ ] Step 4: Login with RoleID & SecretID (Persona: app)
+## Step 4: Login with RoleID & SecretID (Persona: app)
 
 The idea here is KubeVault operator connects to an external Vault server using AppRole in the AppBinding CRD. To support this we need to add
 `AppRole *AppRoleConfig` in [VaultServerConfiguration](https://github.com/kubevault/operator/blob/3535586316cb243c4b4648fbacf06b148da73c0c/apis/config/v1alpha1/vault_server_config_types.go#L28)
 
 The info from AppBinding should be used to implement `AuthInterface` interface in `approle` package here: https://github.com/kubevault/operator/tree/3535586316cb243c4b4648fbacf06b148da73c0c/pkg/vault/auth
 
-- [ ] Step 5: Read secrets using the AppRole token
+## Step 5: Read secrets using the AppRole token
 - [ ] Response Wrap the SecretID
 
 No special support needed for this in KubeVault operator. One place this can be supported is in CSI driver. Currently CSI driver uses Kubernetes Auth method and pod's service account to read secrets from Vault and mount into the pod. If the application that is running inside the pod, instead connects to Vault directly to read secrets, we could extend the CSI driver to inject a wrapped SecretID into the pod. My question is now necessary is this?
@@ -50,3 +48,8 @@ No special support needed for this in KubeVault operator. One place this can be 
 - [ ] Limit the SecretID Usages
 
 This should be supported by the PolicyBinding
+
+## Additional Reading
+
+- https://www.vaultproject.io/api-docs/auth/approle
+- https://www.vaultproject.io/docs/auth/approle
